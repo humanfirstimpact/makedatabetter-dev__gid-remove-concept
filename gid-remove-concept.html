@@ -1,0 +1,146 @@
+<!--
+  Wrapper component for concepts
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<!--
+`gid-remove-concept`
+
+The `gid-remove-concept` element is a data component acting as a wrapper  on gid-api used for handling rest calls for
+removeing a particular concept.
+
+<gid-remove-concept  api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+label='id_832' applications = '["100237", "100267"]' lob = '100001'
+impact-area = ' [{"id": "120003","label": "impact-area-label-1"},{"id": "120001","label": "impact-area-label-3"}]' 
+user='111002' remove = true response='{{response}}'>
+</gid-remove-concept>
+        
+ 
+The fields 'concept', 'user' and 'remove' are  mandatory.
+
+If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
+
+@demo demo/index.html
+-->
+<dom-module id="gid-remove-concept">
+  <template>
+          <!-- fetch entity path  -->
+        	<gid-api entity = '{{apiEntity}}' path='{{path}}'></gid-api>
+        <!--  fetch entity path -->
+        
+         <!-- fetch concept details -->	
+			<gid-api auto=false
+			method="remove" api-url={{removeConceptUrl}} response='{{removeConceptResponse}}'
+			api-timeout={{removeConceptTimeout}} api-params={{removeConceptParams}}>
+		    </gid-api>			
+	    <!-- fetch concept details -->
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'gid-remove-concept',
+        properties:{
+	        	apiUrl:{
+	            	type: String,
+	    	        notify: true,
+	    	        value: ''
+	    	 	},
+	    	 	removeConceptUrl:{
+                	type: String,
+        	        notify: true
+        	 	},
+        	 	removeConceptTimeout : {
+            		type: Number,
+        	        notify: true,
+        	        value : 0
+        	    },
+        	    removeConceptResponse : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : 'removeConceptResponseChanged'
+        	  	},
+        	  	removeConceptParams : {
+	     	   		type: String,
+	     	   		notify : true
+     	   	    },
+	     	   	removeConceptRequestBody : {
+	     	   		type: Object,
+	     	   		notify : true
+	 	   	    },
+	 	   	    response: {
+     	          type: Object,
+     	          value: {},
+     	          notify: true
+     	        },
+              	user: {
+     	        	type: String,
+     	        	value : '',
+     	        	notify :  true
+     	        },
+     	        concept: {
+     	        	type: String,
+     	        	value: '',
+     	        	notify: true
+     	        },
+                path: {
+               	   type: String,
+                   notify: true,
+                   value: '',
+                   observer: 'pathReceived'
+                },
+                apiEntity: {
+               	   type: String,
+                   notify: true
+                },
+                remove: {
+               		type: Boolean,
+            		notify: true,
+            		value: false,
+            		observer: 'removeConcept'
+               	}
+                
+               
+        },
+        removeConceptResponseChanged : function(newvalue, oldvalue){
+          this.response = [];
+	          if(newvalue != null){
+		             this.async(function() {
+		         		this.response =  newvalue.concept;
+		         		console.log(this.response);
+		   		 	          }, 500);
+	          }
+         	
+         },
+         removeConcept: function () {
+        	 if (this.remove) {
+        	 	if (!this.apiUrl) {
+// 	      			this.removeConceptUrl = this.importPath + 'assets/json/' + this.entity.toLowerCase() + '.json';
+// 	                this.removeConceptTimeout =  this.removeConceptTimeout - 1;
+      			}
+        		else {
+         			this.apiEntity = 'REMOVE-CONCEPT';
+         		}
+         	}
+				
+         },
+         pathReceived: function(){
+         	if(this.path){
+         		var res = this.path.split(/{([^}]+)}/);
+         		for (var i in res) {
+         			if(!res[i].startsWith("/")){
+         					if(this[res[i]]){
+         						res[i] = this[res[i]];
+         					}
+         			}
+         		}
+       			this.removeConceptUrl = this.apiUrl + res.join("");
+       			this.removeConceptTimeout =  this.removeConceptTimeout - 1;
+         		
+         	}
+         }
+      });
+    })();
+  </script>
+</dom-module>
