@@ -1,23 +1,36 @@
 # gid-remove-concept
 
-A data component to remove concept
+## Install the Polymer-CLI
 
-    <gid-remove-concept user='1' conceptId='10002'>
-    </<gid-remove-concept>
-    
-The properties 'conceptId' and 'user' are mandatory.
+First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
 
-API endpoint:
+## Viewing Your Application
 
-    DELETE /concepts/{id}
+```
+$ polymer serve
+```
 
-Input:
+## Building Your Application
 
-- Concept Id
-- User Id
-	
-Output:
+```
+$ polymer build
+```
 
-      {
-        "message" : "Concept removed successfully"
-      }
+This will create a `build/` folder with `bundled/` and `unbundled/` sub-folders
+containing a bundled (Vulcanized) and unbundled builds, both run through HTML,
+CSS, and JS optimizers.
+
+You can serve the built versions by giving `polymer serve` a folder to serve
+from:
+
+```
+$ polymer serve build/bundled
+```
+
+## Running Tests
+
+```
+$ polymer test
+```
+
+Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
