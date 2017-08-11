@@ -116,6 +116,8 @@ Output:
         },
         removeConceptResponseChanged : function(newvalue, oldvalue){
           this.response = [];
+		  this.apiEntity = '';
+          this.path = '';
 	          if(newvalue != null){
 		             this.async(function() {
 		         		this.response =  newvalue.concept;
@@ -127,7 +129,7 @@ Output:
          removeConcept: function () {
         	 if (this.remove) {
         	 	if (!this.apiUrl) {
-// 	      			this.removeConceptUrl = this.importPath + 'assets/json/' + this.entity.toLowerCase() + '.json';
+// 	      			this.removeConceptUrl = this.importPath + 'assets/json/remove-concept.json';
 // 	                this.removeConceptTimeout =  this.removeConceptTimeout - 1;
       			}
         		else {
