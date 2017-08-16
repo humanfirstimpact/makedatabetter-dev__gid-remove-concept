@@ -42,7 +42,8 @@ Output:
          <!-- fetch concept details -->	
 			<gid-api auto=false
 			method="remove" api-url={{removeConceptUrl}} response='{{removeConceptResponse}}'
-			api-timeout={{removeConceptTimeout}} api-params={{removeConceptParams}}>
+			api-params={{removeConceptParams}} api-token = {{removeConceptToken}}
+		    api-timeout={{removeConceptTimeout}}>
 		    </gid-api>			
 	    <!-- fetch concept details -->
 
@@ -53,6 +54,11 @@ Output:
       Polymer({
         is:'gid-remove-concept',
         properties:{
+	        	apiToken: {
+	            	type: String,
+	                notify: true,
+	                value : ''
+	            },
 	        	apiUrl:{
 	            	type: String,
 	    	        notify: true,
@@ -73,6 +79,10 @@ Output:
 	     	  		observer : 'removeConceptResponseChanged'
         	  	},
         	  	removeConceptParams : {
+	     	   		type: String,
+	     	   		notify : true
+     	   	    },
+     	   		removeConceptToken : {
 	     	   		type: String,
 	     	   		notify : true
      	   	    },
@@ -148,6 +158,9 @@ Output:
          			}
          		}
        			this.removeConceptUrl = this.apiUrl + res.join("");
+       			if(this.apiToken){
+       				this.removeConceptToken =  this.apiToken;
+       			}
        			this.removeConceptTimeout =  this.removeConceptTimeout - 1;
          		
          	}
