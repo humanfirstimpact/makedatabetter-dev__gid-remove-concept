@@ -25,13 +25,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-bind" id="app">
     
         <gid-remove-concept api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
-        user='1' concept='10002' api-token = 'VVNfMjItMzg0MjY1N18xMTA1MTY0MzI5NzY0MTUwMjQ1MTUxMTQ1MzI3MDFY'
+        user='1' concept='100534' api-token = 'VVNfMjItMzg0MjY1N18xMTA1MTY0MzI5NzY0MTUwMjQ1MTUxMTQ1MzI3MDFY'
         remove=true response={{response}}>
 		</gid-remove-concept>
         
         <template is="dom-if" if="[[response]]">
             <div class="horizontal-section">
-                <p>{{response.message}}</p>
+                <p>{{response.userMessage}}</p>
             </div>
         </template>
     </template>
