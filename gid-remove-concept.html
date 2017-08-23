@@ -17,7 +17,7 @@ If 'apiUrl' is not provided, then the component would fetch sample data from moc
 
 API endpoint:
 
-    DELETE /concepts/{id}
+    DELETE /domains/{id}
 
 Input:
 
@@ -41,7 +41,7 @@ Output:
         
          <!-- fetch concept details -->	
 			<gid-api auto=false
-			method="DELETE" api-url={{removeConceptUrl}} response='{{removeConceptResponse}}'
+			method="DELETE" api-url={{removeConceptUrl}} api-content-type="application/x-www-form-urlencoded" response='{{removeConceptResponse}}'
 			api-params={{removeConceptParams}} api-token = {{removeConceptToken}}
 		    api-timeout={{removeConceptTimeout}}>
 		    </gid-api>			
@@ -86,11 +86,7 @@ Output:
 	     	   		type: String,
 	     	   		notify : true
      	   	    },
-	     	   	removeConceptRequestBody : {
-	     	   		type: Object,
-	     	   		notify : true
-	 	   	    },
-	 	   	    response: {
+	     	    response: {
      	          type: Object,
      	          value: {},
      	          notify: true
