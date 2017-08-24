@@ -36,12 +36,13 @@ Output:
 <dom-module id="gid-remove-concept">
   <template>
           <!-- fetch entity path  -->
-        	<gid-api entity = '{{apiEntity}}' path='{{path}}'></gid-api>
+        	<gid-api entity = '{{apiEntity}}' path-key= '{{pathKey}}' path='{{path}}'></gid-api>
         <!--  fetch entity path -->
         
          <!-- fetch concept details -->	
 			<gid-api auto=false
-			method="DELETE" api-url={{removeConceptUrl}} api-content-type="application/x-www-form-urlencoded" response='{{removeConceptResponse}}'
+			method="DELETE" api-url={{removeConceptUrl}} api-content-type="application/x-www-form-urlencoded"
+			response='{{removeConceptResponse}}' error ='{{removeConceptErrorResponse}}'
 			api-params={{removeConceptParams}} api-token = {{removeConceptToken}}
 		    api-timeout={{removeConceptTimeout}}>
 		    </gid-api>			
@@ -76,8 +77,13 @@ Output:
         	    removeConceptResponse : {
 	     	  		type : Object,
 	     	  		notify : true,
-	     	  		observer : 'removeConceptResponseChanged'
+	     	  		observer : 'removeConceptResponseReceived'
         	  	},
+        	  	removeConceptErrorResponse : {
+		 	   		type: String,
+	 	   	    	notify: true,
+	 	   	    	observer : 'removeConceptErrorReceived'
+	 	   		},
         	  	removeConceptParams : {
 	     	   		type: String,
 	     	   		notify : true
@@ -101,6 +107,11 @@ Output:
      	        	value: '',
      	        	notify: true
      	        },
+     	       	pathKey: {
+               	   type: String,
+                   notify: true,
+                   value: ''
+                },
                 path: {
                	   type: String,
                    notify: true,
@@ -120,11 +131,8 @@ Output:
                 
                
         },
-        removeConceptResponseChanged : function(newvalue, oldvalue){
-          this.response = [];
-		  this.apiEntity = '';
-          this.path = '';
-		  this.remove = false;
+        removeConceptResponseReceived : function(newvalue, oldvalue){
+          this.reset(); 
 	          if(newvalue != null){
 		             this.async(function() {
 		         		this.response =  newvalue;
@@ -132,6 +140,20 @@ Output:
 	          }
          	
          },
+         removeConceptErrorReceived :  function(newvalue, oldvalue){
+   		  	 this.reset();
+	        	if(newvalue !== null){
+	        		this.async(function() {
+		         		this.response =  newvalue.response;
+		   		 	          }, 500);
+	        	}
+	     },
+	     reset: function(){
+	    	 this.response = [];
+	    	 this.apiEntity = '';
+          	 this.path = '';
+		     this.remove = false;
+	     },
          removeConcept: function () {
         	 if (this.remove) {
         	 	if (!this.apiUrl) {
@@ -139,6 +161,7 @@ Output:
 // 	                this.removeConceptTimeout =  this.removeConceptTimeout - 1;
       			}
         		else {
+        			this.pathKey =  'default';
          			this.apiEntity = 'REMOVE-CONCEPT';
          		}
          	}
