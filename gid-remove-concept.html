@@ -8,10 +8,14 @@
 
 A data component to remove concept
 
-    <gid-remove-concept user='1' conceptId='10002'>
+    <gid-remove-concept user='1' concept='10002' remove=true response={{response}}>
     </gid-remove-concept>
     
-The properties 'conceptId' and 'user' are mandatory.
+The properties 'concept', 'user' and 'remove' are mandatory.
+
+The field 'remove' needs to be set to 'true' in order to remove a concept.
+
+The field 'response' returns the response provided by the rest call.
 
 If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
 
