@@ -17,11 +17,11 @@
     "gid-api": "makedatabetter-dev/gid-api"
   },
   "homepage": "https://github.com/makedatabetter-dev/gid-remove-concept",
-  "_release": "a805f29aa1",
+  "_release": "6afc2d3f06",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "a805f29aa1f6906229b52c933aafe2e2bef39a9d"
+    "commit": "6afc2d3f067034e1eaf08fb11875ec57911aa32b"
   },
   "_source": "https://github.com/makedatabetter-dev/gid-remove-concept.git",
   "_target": "*",

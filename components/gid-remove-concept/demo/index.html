@@ -13,34 +13,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <title>gid remove concept</title>
 
-    <link rel="import" href="../gid-remove-concept.html">
+    <link rel="import" href="remove-concept.html">
     <style>
 	  	
   	</style>
 </head>
 <body unresolved>
-<h1>Remove Concept</h1>
-
-<div class="horizontal-section-container">
-    <template is="dom-bind" id="app">
-    
-        <gid-remove-concept api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
-        user='1' concept='10002'
-        remove=true response={{response}}>
-		</gid-remove-concept>
-        
-        <template is="dom-if" if="[[response]]">
-            <div class="horizontal-section">
-                <p>{{response.message}}</p>
-            </div>
-        </template>
-    </template>
-</div>
-
+ <remove-concept></remove-concept>
 <script>
-    var app = document.querySelector('#app');
-
-
 </script>
 </body>
 </html>

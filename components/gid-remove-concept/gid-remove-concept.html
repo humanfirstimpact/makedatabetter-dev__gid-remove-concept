@@ -1,5 +1,5 @@
 <!--
-  Wrapper component for concepts
+  Wrapper component for removing concepts
 -->
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../gid-api/gid-api.html">
@@ -8,26 +8,30 @@
 
 A data component to remove concept
 
-    <gid-remove-concept user='1' conceptId='10002'>
+    <gid-remove-concept user='1' concept='10002' remove=true response={{response}}>
     </gid-remove-concept>
     
-The properties 'conceptId' and 'user' are mandatory.
+The properties 'concept', 'user' and 'remove' are mandatory.
+
+The field 'remove' needs to be set to 'true' in order to remove a concept.
+
+The field 'response' returns the response provided by the rest call.
 
 If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
 
 API endpoint:
 
-    DELETE /concepts/{id}
+    DELETE /domains/{id}
 
 Input:
 
-- Concept Id
+- Domain Id
 - User Id
 	
 Output:
 
       {
-        "message" : "Concept removed successfully"
+        "message" : "Domain removed successfully"
       }.
 
 
@@ -36,13 +40,15 @@ Output:
 <dom-module id="gid-remove-concept">
   <template>
           <!-- fetch entity path  -->
-        	<gid-api entity = '{{apiEntity}}' path='{{path}}'></gid-api>
+        	<gid-api entity = '{{apiEntity}}' path-key= '{{pathKey}}' path='{{path}}'></gid-api>
         <!--  fetch entity path -->
         
          <!-- fetch concept details -->	
 			<gid-api auto=false
-			method="remove" api-url={{removeConceptUrl}} response='{{removeConceptResponse}}'
-			api-timeout={{removeConceptTimeout}} api-params={{removeConceptParams}}>
+			method="DELETE" api-url={{removeConceptUrl}} api-content-type="application/x-www-form-urlencoded"
+			response='{{removeConceptResponse}}' error ='{{removeConceptErrorResponse}}'
+			api-params={{removeConceptParams}} api-token = {{removeConceptToken}}
+		    api-timeout={{removeConceptTimeout}}>
 		    </gid-api>			
 	    <!-- fetch concept details -->
 
@@ -53,6 +59,11 @@ Output:
       Polymer({
         is:'gid-remove-concept',
         properties:{
+	        	apiToken: {
+	            	type: String,
+	                notify: true,
+	                value : ''
+	            },
 	        	apiUrl:{
 	            	type: String,
 	    	        notify: true,
@@ -70,17 +81,22 @@ Output:
         	    removeConceptResponse : {
 	     	  		type : Object,
 	     	  		notify : true,
-	     	  		observer : 'removeConceptResponseChanged'
+	     	  		observer : 'removeConceptResponseReceived'
         	  	},
+        	  	removeConceptErrorResponse : {
+		 	   		type: String,
+	 	   	    	notify: true,
+	 	   	    	observer : 'removeConceptErrorReceived'
+	 	   		},
         	  	removeConceptParams : {
 	     	   		type: String,
 	     	   		notify : true
      	   	    },
-	     	   	removeConceptRequestBody : {
-	     	   		type: Object,
+     	   		removeConceptToken : {
+	     	   		type: String,
 	     	   		notify : true
-	 	   	    },
-	 	   	    response: {
+     	   	    },
+	     	    response: {
      	          type: Object,
      	          value: {},
      	          notify: true
@@ -95,6 +111,11 @@ Output:
      	        	value: '',
      	        	notify: true
      	        },
+     	       	pathKey: {
+               	   type: String,
+                   notify: true,
+                   value: ''
+                },
                 path: {
                	   type: String,
                    notify: true,
@@ -114,23 +135,37 @@ Output:
                 
                
         },
-        removeConceptResponseChanged : function(newvalue, oldvalue){
-          this.response = [];
+        removeConceptResponseReceived : function(newvalue, oldvalue){
+          this.reset(); 
 	          if(newvalue != null){
 		             this.async(function() {
-		         		this.response =  newvalue.concept;
-		         		console.log(this.response);
+		         		this.response =  newvalue;
 		   		 	          }, 500);
 	          }
          	
          },
+         removeConceptErrorReceived :  function(newvalue, oldvalue){
+   		  	 this.reset();
+	        	if(newvalue !== null){
+	        		this.async(function() {
+		         		this.response =  newvalue.response;
+		   		 	          }, 500);
+	        	}
+	     },
+	     reset: function(){
+	    	 this.response = [];
+	    	 this.apiEntity = '';
+          	 this.path = '';
+		     this.remove = false;
+	     },
          removeConcept: function () {
         	 if (this.remove) {
         	 	if (!this.apiUrl) {
-// 	      			this.removeConceptUrl = this.importPath + 'assets/json/' + this.entity.toLowerCase() + '.json';
+// 	      			this.removeConceptUrl = this.importPath + 'assets/json/remove-concept.json';
 // 	                this.removeConceptTimeout =  this.removeConceptTimeout - 1;
       			}
         		else {
+        			this.pathKey =  'default';
          			this.apiEntity = 'REMOVE-CONCEPT';
          		}
          	}
@@ -147,6 +182,9 @@ Output:
          			}
          		}
        			this.removeConceptUrl = this.apiUrl + res.join("");
+       			if(this.apiToken){
+       				this.removeConceptToken =  this.apiToken;
+       			}
        			this.removeConceptTimeout =  this.removeConceptTimeout - 1;
          		
          	}
