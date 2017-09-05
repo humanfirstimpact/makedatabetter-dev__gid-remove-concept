@@ -32,23 +32,23 @@ Output:
 
       {
         "message" : "Domain removed successfully"
-      }.
+      }
 
 
 @demo demo/index.html
 -->
 <dom-module id="gid-remove-concept">
   <template>
-          <!-- fetch entity path  -->
-        	<gid-api entity = '{{apiEntity}}' path-key= '{{pathKey}}' path='{{path}}'></gid-api>
+          <!-- fetch entity _path  -->
+        	<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
         <!--  fetch entity path -->
         
          <!-- fetch concept details -->	
 			<gid-api auto=false
-			method="DELETE" api-url={{removeConceptUrl}} api-content-type="application/x-www-form-urlencoded"
+			method="DELETE" api-url={{_removeConceptUrl}} api-content-type="application/x-www-form-urlencoded"
 			response='{{removeConceptResponse}}' error ='{{removeConceptErrorResponse}}'
-			api-params={{removeConceptParams}} api-token = {{removeConceptToken}}
-		    api-timeout={{removeConceptTimeout}}>
+			api-params={{_removeConceptParams}} api-token = {{_removeConceptToken}}
+		    api-timeout={{_removeConceptTimeout}}>
 		    </gid-api>			
 	    <!-- fetch concept details -->
 
@@ -59,84 +59,100 @@ Output:
       Polymer({
         is:'gid-remove-concept',
         properties:{
+        		/*Authorization token for accessing rest api*/
 	        	apiToken: {
 	            	type: String,
 	                notify: true,
 	                value : ''
 	            },
+	            /*Base url*/
 	        	apiUrl:{
 	            	type: String,
 	    	        notify: true,
 	    	        value: ''
 	    	 	},
-	    	 	removeConceptUrl:{
+	    	 	/*Url sent to gid-api*/
+	    	 	_removeConceptUrl:{
                 	type: String,
         	        notify: true
         	 	},
-        	 	removeConceptTimeout : {
+        	 	/*Timeout sent to gid-api*/
+        	 	_removeConceptTimeout : {
             		type: Number,
         	        notify: true,
         	        value : 0
         	    },
+        	    /*Response sent to gid-api. This is a private property*/
         	    removeConceptResponse : {
 	     	  		type : Object,
 	     	  		notify : true,
-	     	  		observer : 'removeConceptResponseReceived'
+	     	  		observer : '_removeConceptResponseReceived'
         	  	},
+        	  	/*Error sent to gid-api. This is a private property*/
         	  	removeConceptErrorResponse : {
 		 	   		type: String,
 	 	   	    	notify: true,
-	 	   	    	observer : 'removeConceptErrorReceived'
+	 	   	    	observer : '_removeConceptErrorReceived'
 	 	   		},
-        	  	removeConceptParams : {
+	 	   		/*Params sent to gid-api*/
+        	  	_removeConceptParams : {
 	     	   		type: String,
 	     	   		notify : true
      	   	    },
-     	   		removeConceptToken : {
+     	   		/*Token sent to gid-api*/
+     	   		_removeConceptToken : {
 	     	   		type: String,
 	     	   		notify : true
      	   	    },
+     	   		/*Object for storing success/error response*/
 	     	    response: {
      	          type: Object,
      	          value: {},
      	          notify: true
      	        },
+     	        /*User Id*/
               	user: {
      	        	type: String,
      	        	value : '',
      	        	notify :  true
      	        },
+     	        /*Concept Id*/
      	        concept: {
      	        	type: String,
      	        	value: '',
      	        	notify: true
      	        },
-     	       	pathKey: {
+     	       /*The api path key*/
+     	       	_pathKey: {
                	   type: String,
                    notify: true,
                    value: ''
                 },
-                path: {
+                /*The api path*/
+                _path: {
                	   type: String,
                    notify: true,
                    value: '',
-                   observer: 'pathReceived'
+                   observer: '_pathReceived'
                 },
-                apiEntity: {
+                /*Api entity sent to gid-api*/
+                _apiEntity: {
                	   type: String,
                    notify: true
                 },
+                /*Flag needs to be set to 'true' to remove a concept*/
                 remove: {
                		type: Boolean,
             		notify: true,
             		value: false,
-            		observer: 'removeConcept'
+            		observer: '_removeConcept'
                	}
                 
                
         },
-        removeConceptResponseReceived : function(newvalue, oldvalue){
-          this.reset(); 
+        /* Success response handler */
+        _removeConceptResponseReceived : function(newvalue, oldvalue){
+          this._reset(); 
 	          if(newvalue != null){
 		             this.async(function() {
 		         		this.response =  newvalue;
@@ -144,36 +160,40 @@ Output:
 	          }
          	
          },
-         removeConceptErrorReceived :  function(newvalue, oldvalue){
-   		  	 this.reset();
+         /* Error response handler */
+         _removeConceptErrorReceived :  function(newvalue, oldvalue){
+   		  	 this._reset();
 	        	if(newvalue !== null){
 	        		this.async(function() {
 		         		this.response =  newvalue.response;
 		   		 	          }, 500);
 	        	}
 	     },
-	     reset: function(){
+	     /* Reset method */
+	     _reset: function(){
 	    	 this.response = [];
-	    	 this.apiEntity = '';
-          	 this.path = '';
+	    	 this._apiEntity = '';
+          	 this._path = '';
 		     this.remove = false;
 	     },
-         removeConcept: function () {
+	     /* Observer of 'remove' flag */
+         _removeConcept: function () {
         	 if (this.remove) {
         	 	if (!this.apiUrl) {
-// 	      			this.removeConceptUrl = this.importPath + 'assets/json/remove-concept.json';
-// 	                this.removeConceptTimeout =  this.removeConceptTimeout - 1;
+// 	      			this._removeConceptUrl = this.importPath + 'assets/json/remove-concept.json';
+// 	                this._removeConceptTimeout =  this._removeConceptTimeout - 1;
       			}
         		else {
-        			this.pathKey =  'default';
-         			this.apiEntity = 'REMOVE-CONCEPT';
+        			this._pathKey =  'default';
+         			this._apiEntity = 'REMOVE-CONCEPT';
          		}
          	}
 				
          },
-         pathReceived: function(){
-         	if(this.path){
-         		var res = this.path.split(/{([^}]+)}/);
+         /* Observer for api path */
+         _pathReceived: function(){
+         	if(this._path){
+         		var res = this._path.split(/{([^}]+)}/);
          		for (var i in res) {
          			if(!res[i].startsWith("/")){
          					if(this[res[i]]){
@@ -181,11 +201,11 @@ Output:
          					}
          			}
          		}
-       			this.removeConceptUrl = this.apiUrl + res.join("");
+       			this._removeConceptUrl = this.apiUrl + res.join("");
        			if(this.apiToken){
-       				this.removeConceptToken =  this.apiToken;
+       				this._removeConceptToken =  this.apiToken;
        			}
-       			this.removeConceptTimeout =  this.removeConceptTimeout - 1;
+       			this._removeConceptTimeout =  this._removeConceptTimeout - 1;
          		
          	}
          }
